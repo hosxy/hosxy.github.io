@@ -20,6 +20,7 @@ before_install:
 install:
   - npm install
   - npm install json-stringify-safe
+  - npm install ejs-lint
 
 
 script:
