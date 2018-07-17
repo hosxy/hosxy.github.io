@@ -23,6 +23,7 @@ install:
 
 
 script:
+  - hexo --version
   - hexo clean
   - hexo g
 

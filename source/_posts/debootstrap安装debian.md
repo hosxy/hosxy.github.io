@@ -3,7 +3,7 @@ title: debootstrap安装debian stretch
 date: 2017-05-03 20:36:42
 tags: [debootstrap,debian,linux]
 ---
-## 通过debootstrap安装debian stretch
+# 通过debootstrap安装debian stretch
 主要介绍如何通过debootstrap安装debian。
 通过debootstrap安装debian首先得有一个liveCD，我用的是ubuntu 16.04的livecd。本文大部分内容来自debian安装手册。
 debian stretch安装手册链接：
