@@ -19,6 +19,7 @@ before_install:
 # S: Build Lifecycle
 install:
   - npm install
+  - npm install json-stringify-safe
 
 
 script:
