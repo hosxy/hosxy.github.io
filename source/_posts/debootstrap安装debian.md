@@ -12,10 +12,12 @@ debian stretch安装手册英文版：https://d-i.debian.org/manual/en.amd64/
 如果有能力的话，我建议看英文版比较好，中文版翻译比较落后。
 ## 1、准备开始
 首先在分区上创建文件系统，我用的是ext4文件系统。
-```
+
+``` bash
 mkfs.ext4 /dev/sda10
 mkfs.ext4 /dev/sda8
 ```
+
 初始化并激活交换分区
 ```
 mkswap /dev/sda9
