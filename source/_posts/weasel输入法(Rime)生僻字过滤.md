@@ -1,5 +1,5 @@
 ---
-title: weasel输入法(Rime)生僻字过滤
+title: Weasel输入法(Rime)生僻字过滤
 date: 2019-01-06 19:00:42
 tags: [Weasel,Rime]
 ---
