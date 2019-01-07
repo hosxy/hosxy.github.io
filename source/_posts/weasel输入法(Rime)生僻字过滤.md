@@ -26,7 +26,7 @@ patch:
     - options: ["gbk","utf8"]                			# 字符集选单
       reset: 0                                          # 默认 UTF-8
       states:
-	    - GBK
+        - GBK
         - UTF-8
         
   engine/filters:
