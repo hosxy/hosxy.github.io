@@ -34,7 +34,7 @@ set ARGV=
 set str="%1"
 
 :param
-if "%str%"=="" (
+if ""%str%""=="""" (
     goto end
 )
 set ARGV=%ARGV% %str%
@@ -65,7 +65,7 @@ set ARGV=
 set str="%1"
 
 :param
-if "%str%"=="" (
+if ""%str%""=="""" (
     goto end
 )
 set ARGV=%ARGV% %str%
