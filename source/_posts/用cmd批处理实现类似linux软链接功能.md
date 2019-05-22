@@ -31,7 +31,7 @@ set Path=%Path%;%MSYS2_HOME%\usr\bin
 set COMMAND=%MSYS2_HOME%\usr\bin\git.exe
 
 set ARGV=
-set str="%1"
+set str=%1
 
 :param
 if ""%str%""=="""" (
@@ -39,7 +39,7 @@ if ""%str%""=="""" (
 )
 set ARGV=%ARGV% %str%
 shift /0
-set str="%1"
+set str=%1
 goto param
 
 :end
@@ -62,7 +62,7 @@ set Path=%Path%;%MSYS2_HOME%\usr\bin
 set COMMAND=%MSYS2_HOME%\usr\bin\git.exe
 
 set ARGV=
-set str="%1"
+set str=%1
 
 :param
 if ""%str%""=="""" (
@@ -70,7 +70,7 @@ if ""%str%""=="""" (
 )
 set ARGV=%ARGV% %str%
 shift /0
-set str="%1"
+set str=%1
 goto param
 
 :end
