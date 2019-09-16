@@ -20,7 +20,11 @@ before_install:
 install:
   - npm install
   - npm install json-stringify-safe
-
+  - npm i -S hexo-prism-plugin
+  - npm i -S hexo-generator-search
+  - npm i -S hexo-permalink-pinyin
+  - npm i -S hexo-wordcount
+  - npm i -S hexo-filter-github-emojis
 
 script:
   - hexo --version
