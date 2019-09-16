@@ -10,9 +10,11 @@ tags: [GTK3,Font,Linux]
 
 简单来说就是GTK3程序界面不能使用非`Regular`字形(也不一定一定就是`Regular`,应该说是默认字形)。比如说 Linux 桌面里使用最多的简体中文字体之一 `思源黑体`有时候也叫作`Source Han Sans `和`Noto Sans CJK`，其实都是一个字体(它由Google和Adobe联合设计)，但是Google和Adobe对它叫法不一样，它共有7个字形分别是 `ExtraLight`, `Light`, `Normal`,  `Regular`, `Medium`, `Bold`, `Heavy`。对于GTK3程序的界面你无论把字体设置成这七个中的哪一个，最后GTK都只会使用`Regular`字形。这是个bug，而且时间已经很久了，估计也不会修了。但是GTK2却没有这个毛病。
 
-**Tips1：这里特别强调下是GTK3程序界面字体，不包括比如文本编辑器，终端等带文本界面的文本字体**
 
-**Tips2：这也可能不是 bug，是 Feature，毕竟GTK没有 bug，只有 Feature  （︶^︶）。**
+
+> **Tips1：这里特别强调下是 GTK3 程序界面字体，不包括比如文本编辑器，终端等带文本界面的文本字体**
+>
+> **Tips2：这也可能不是 bug，是 Feature，毕竟 GTK 没有 bug，只有 Feature  （︶^︶）。**
 
 
 
