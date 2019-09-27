@@ -233,12 +233,12 @@ postCalendar: true
 # Gitalk 评论模块的配置，默认为不激活
 gitalk:
   enable: false
-  owner: hosxy
-  repo: hosxy-gitalk
+  owner: 
+  repo: 
   oauth:
-    clientId: xxxxxxxxxxxxxxxxx
-    clientSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  admin: hosxy
+    clientId: 
+    clientSecret: 
+  admin: 
 
 # the Gitment config，default disabled
 # Gitment 评论模块的配置，默认为不激活
