@@ -232,12 +232,12 @@ postCalendar: true
 # the Gitalk config，default disabled
 # Gitalk 评论模块的配置，默认为不激活
 gitalk:
-  enable: true
+  enable: false
   owner: hosxy
   repo: hosxy-gitalk
   oauth:
-    clientId: 88f288943702c1c7b459
-    clientSecret: 4c8b1452c9a806e1f512e8830c487d2cb2a552ab
+    clientId: xxxxxxxxxxxxxxxxx
+    clientSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   admin: hosxy
 
 # the Gitment config，default disabled
@@ -392,7 +392,7 @@ featureImages:
 # noreprint（不允许转载 not allowed to reprint）
 # pay（付费转载 pay for reprinting）
 reprint:
-  enable: true # whether enable reprint section 是否启用“转载规则限定模块”
+  enable: false # whether enable reprint section 是否启用“转载规则限定模块”
   default: cc_by
   
 # DaoVoice online contact 
