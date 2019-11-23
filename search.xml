@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>解决 Windows10 镜像大于 4G 无法直接 UEFI 启动</title>
+      <link href="/2019/11/23/jie-jue-windows10-jing-xiang-da-yu-4g-wu-fa-zhi-jie-uefi-qi-dong/"/>
+      <url>/2019/11/23/jie-jue-windows10-jing-xiang-da-yu-4g-wu-fa-zhi-jie-uefi-qi-dong/</url>
+      
+        <content type="html"><![CDATA[<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>很多人应该都知道，如果主板使用 UEFI 启动的话，可以直接将 Windows10 的安装镜像解压到U盘(文件系统为 FAT32)根目录，然后启动项选择U盘就可以正常启动 Windows10 安装程序。但是 FAT32 文件系统历史有点久远了，无法存放大于4G的单文件，但是随着 Windows 不断更新，安装镜像也越来越大，之前 Windows10的安装镜像就已经超过了 4G，但所幸 ISO 里面的单文件没有哪个超过 4G，但是今天下载 Windows10 1909的 ISO 时发现里面的 <code>install.wim</code> 已经正式超过 4G，达到了将近 4.2G，所以就无法将 ISO 直接解压到文件系统为 FAT32 的 U 盘里了。</p><h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><h3 id="直接将U盘格式化为-NTFS-文件系统"><a href="#直接将U盘格式化为-NTFS-文件系统" class="headerlink" title="直接将U盘格式化为 NTFS 文件系统"></a>直接将U盘格式化为 NTFS 文件系统</h3><p>可以直接将U盘格式化为 NTFS 文件系统，NTFS 没有单文件4G的限制。但是不推荐这种做法，首先这不是通用的方法，不是所有的主板都认 NTFS 文件系统的 ESP 分区的，其次 NTFS 作为一个日志式文件系统，对U盘伤害比较大，并不适合。当然这也是一个办法，虽然不怎么好。</p><h3 id="分割镜像"><a href="#分割镜像" class="headerlink" title="分割镜像"></a>分割镜像</h3><p>既然存在这种问题，微软当然也是考虑过的。解决方法就是将超过 4G 的单文件分割成多个小于4G的文件。具体做法如下：</p><ul><li><p>首先以管理员身份打开一个 cmd 也就是命令提示符。</p></li><li><p>使用以下命令分割 <code>install.wim</code> 文件:</p><pre><code>dism /Split-Image /ImageFile:G:\sources\install.wim /SWMFile:E:\install.swm /FileSize:4000</code></pre><p><code>/ImageFile</code>指定<code>install.wim</code>文件的位置，<code>/SWMFile</code>指定分割后输出文件的名称及位置，<code>/FileSize</code>指定分割后的单文件最大大小，单位是MB。<br>如上命令最后会在 E 盘输出两个文件分别为 <code>inatall.swm</code>和<code></code>install2.swm`</p></li><li><p>将ISO里面除<code>install.wim</code>外的文件及目录复制到U盘根目录，然后将<code>install.swm</code>和<code>install2.swm</code>复制到之前<code>install.wim</code>所在的目录即可(其实就是用<code>install.swm</code>和<code>install2.swm</code>替代<code>install.wim</code> )</p></li><li><p>然后正常使用 UEFI 启动即可。</p></li></ul><p>我个人推荐这种做法，虽然略有一点麻烦。</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Windows </tag>
+            
+            <tag> UEFI </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Firefox 69 启用 userChrome.css</title>
+      <link href="/2019/10/09/firefox-69-qi-yong-userchrome/"/>
+      <url>/2019/10/09/firefox-69-qi-yong-userchrome/</url>
+      
+        <content type="html"><![CDATA[<p>众所周知 Mozilla 正在一步步淘汰 XUL，前不是很久 Firefox 已经淘汰了老 XUL 扩展，全面拥抱 google chrome主导的 webextension。</p><p>现在 Firefox 69 版本起默认不加载<code>userChrome.css</code>了，当然这是对新用户的，如果你在老版本的 Firefox 用了 <code>userChrome.css</code> ，然后升级到 69 是不会禁用的。</p><p>如果是全新安装的话也很简单，打开<code>about:config</code>，搜索<code>toolkit.legacyUserProfileCustomizations.stylesheets</code>，将其置为 <code>true</code>，然后重启浏览器即可。</p><p>这里顺便贴下我的 <code>userChrome.css</code>：</p><pre class="line-numbers language-css"><code class="language-css"><span class="token comment" spellcheck="true">/*57+去除左上角空白*/</span><span class="token selector"><span class="token class">.titlebar-spacer</span><span class="token attribute">[type="pre-tabs"]</span> </span><span class="token punctuation">{</span>    <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*去除无用书签右键菜单*/</span>#placesContext_open,[command=<span class="token string">"placesCmd_open:tab"</span>], [class=<span class="token string">"openintabs-menuitem"</span>],<span class="token comment" spellcheck="true">/*在标签页中打开书签组*/</span>[id=<span class="token string">"placesContext_open:newprivatewindow"</span>],<span class="token comment" spellcheck="true">/*在新隐私窗口中打开*/</span>[id=<span class="token string">"placesContext_openContainer:tabs"</span>]<span class="token comment" spellcheck="true">/*在标签页中打开书签组*/</span> <span class="token punctuation">{</span>    <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*去除右键前进、后退、刷新、书签菜单*/</span><span class="token selector"><span class="token id">#context-navigation</span></span><span class="token punctuation">{</span>    <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*去除“发送到设备”右键*/</span><span class="token selector"><span class="token id">#context-sendpagetodevice</span>, <span class="token id">#context-sep-sendpagetodevice</span>,<span class="token id">#context-sendlinktodevice</span>, <span class="token id">#context-sep-sendlinktodevice</span>,<span class="token id">#context_sendTabToDevice</span>, <span class="token id">#context_sendTabToDevice_separator</span> </span><span class="token punctuation">{</span>  <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*去除右键搜索*/</span><span class="token selector"><span class="token id">#context-searchselect</span></span><span class="token punctuation">{</span>    <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*去除无用图像右键菜单*/</span><span class="token selector"><span class="token id">#context-setDesktopBackground</span>,<span class="token id">#context-sendimage</span>,<span class="token id">#context-viewimageinfo</span> </span><span class="token punctuation">{</span>    <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*隐藏所有右键菜单分割线*/</span><span class="token selector">menuseparator </span><span class="token punctuation">{</span>  <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*去除 链接存为书签*/</span><span class="token selector"><span class="token id">#context-bookmarklink</span></span><span class="token punctuation">{</span>    <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*去除 为搜索引擎添加关键词*/</span><span class="token selector"><span class="token id">#context-keywordfield</span></span><span class="token punctuation">{</span>    <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*去除拼写检查()*/</span><span class="token selector"><span class="token id">#spell-check-enabled</span> </span><span class="token punctuation">{</span>    <span class="token property">display</span><span class="token punctuation">:</span> none <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*设置地址栏圆角*/</span><span class="token selector"><span class="token id">#urlbar</span> </span><span class="token punctuation">{</span>    <span class="token property">border-radius</span><span class="token punctuation">:</span> <span class="token number">2</span>em <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token comment" spellcheck="true">/*地址栏收藏按钮向左偏移 6px*/</span><span class="token selector"><span class="token id">#star-button</span> </span><span class="token punctuation">{</span>    <span class="token property">margin-right</span><span class="token punctuation">:</span> <span class="token number">6</span>px <span class="token important">!important</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>Firefox</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Firefox </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>关于GTK3程序界面字体不能使用非Regular字形的问题</title>
+      <link href="/2019/09/16/guan-yu-gtk3-cheng-xu-jie-mian-zi-ti-bu-neng-shi-yong-fei-regular-zi-xing-wen-ti/"/>
+      <url>/2019/09/16/guan-yu-gtk3-cheng-xu-jie-mian-zi-ti-bu-neng-shi-yong-fei-regular-zi-xing-wen-ti/</url>
+      
+        <content type="html"><![CDATA[<h1 id="GTK3界面字体的bug"><a href="#GTK3界面字体的bug" class="headerlink" title="GTK3界面字体的bug"></a>GTK3界面字体的bug</h1><p>简单来说就是GTK3程序界面不能使用非<code>Regular</code>字形(也不一定一定就是<code>Regular</code>,应该说是默认字形)。比如说 Linux 桌面里使用最多的简体中文字体之一 <code>思源黑体</code>有时候也叫作<code>Source Han Sans</code>和<code>Noto Sans CJK</code>，其实都是一个字体(它由Google和Adobe联合设计)，但是Google和Adobe对它叫法不一样，它共有7个字形分别是 <code>ExtraLight</code>, <code>Light</code>, <code>Normal</code>,  <code>Regular</code>, <code>Medium</code>, <code>Bold</code>, <code>Heavy</code>。对于GTK3程序的界面你无论把字体设置成这七个中的哪一个，最后GTK都只会使用<code>Regular</code>字形。这是个bug，而且时间已经很久了，估计也不会修了。但是GTK2却没有这个毛病。</p><blockquote><p><strong>Tips1：这里特别强调下是 GTK3 程序界面字体，不包括比如文本编辑器，终端等带文本界面的文本字体</strong></p><p><strong>Tips2：这也可能不是 bug，是 Feature，毕竟 GTK 没有 bug，只有 Feature  （︶^︶）。</strong></p></blockquote><h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><h2 id="1、直接不用gtk3程序"><a href="#1、直接不用gtk3程序" class="headerlink" title="1、直接不用gtk3程序"></a>1、直接不用gtk3程序</h2><p>这是最好最直接最有效的方法了，直接换用 QT 写的桌面环境，比如 KDE , LXQT，尽量使用 QT 写的程序，毕竟 QT 可没有这种 BUG，然后从此远离 GTK。</p><h2 id="2、用-Fontconfig-映射字体"><a href="#2、用-Fontconfig-映射字体" class="headerlink" title="2、用 Fontconfig 映射字体"></a>2、用 Fontconfig 映射字体</h2><p>这又回到那个 bug/feature 了，为什么设置其他字形无效呢？就拿思源黑体简体中文来说，你无论设置成什么字形，GTK 最后貌似都会 fallback 到 <code>思源黑体 CN</code>这个不带任何字形的字形上，然后不带字形一般都是指向<code>Regular</code>。而且貌似这其中还有一些其他的玄学问题。</p><p>知道这个原因后我们就可以通过 Fontconfig 的配置来解决问题。我的做法是让 <code>Sans</code> 映射到<code>思源黑体 CN Medium</code>这个字体上，然后你在把界面字体设置成 <code>Sans</code>就可以达到目的了。</p><p>下面给一个 Fontconfig 配置文件的参考写法：</p><pre class="line-numbers language-xml"><code class="language-xml">    <span class="token comment" spellcheck="true">&lt;!-- 将 sans-serif 映射到 Source Han Sans CN Medium --></span>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>match</span><span class="token punctuation">></span></span>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>test</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>family<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>string</span><span class="token punctuation">></span></span>sans-serif<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>string</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>test</span><span class="token punctuation">></span></span>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>edit</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>family<span class="token punctuation">"</span></span> <span class="token attr-name">mode</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>prepend<span class="token punctuation">"</span></span> <span class="token attr-name">binding</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>strong<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>string</span><span class="token punctuation">></span></span>Source Han Sans CN Medium<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>string</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>edit</span><span class="token punctuation">></span></span>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>match</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre><blockquote><p>  <strong>Tips：不要傻乎乎的把字体名直接写 <code>Sans</code>，要写成 <code>sans-serif</code> ，还有就是字体名最好还是用英文。</strong></p></blockquote><p>但是这么做的同时也会引入新的问题，那就是没办法用粗体了，毕竟是没有<code>思源黑体 CN Medium Bold</code>这个字体的。但是程序界面一般也不会用粗体，所以我个人觉得这点代价还是可以接受的。</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> GTK3 </tag>
+            
+            <tag> Font </tag>
+            
+            <tag> Linux </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>用cmd批处理实现类似linux软链接功能</title>
+      <link href="/2019/05/22/yong-cmd-pi-chu-li-shi-xian-lei-si-linux-ruan-lian-jie-gong-neng/"/>
+      <url>/2019/05/22/yong-cmd-pi-chu-li-shi-xian-lei-si-linux-ruan-lian-jie-gong-neng/</url>
+      
+        <content type="html"><![CDATA[<h3 id="1、问题由来"><a href="#1、问题由来" class="headerlink" title="1、问题由来"></a>1、问题由来</h3><p>最近在玩 <code>MSYS2</code> ，但是由于<code>MSYS2</code>的目录下东西太多，不想将其加入到环境变量<code>PATH</code>中，以免发生冲突，出现莫名其妙的问题。但是<code>windows</code>下没有类似<code>linux</code>下的软链接功能，总不能每次执行命令时都带上路径吧，这绝对不能接受。然后突然就想到了可以写个<code>cmd</code>批处理啊 ヾ(≧▽≦*)o 。</p><h3 id="2、解决方法"><a href="#2、解决方法" class="headerlink" title="2、解决方法"></a>2、解决方法</h3><p>然后就写了个最简单的批处理：</p><pre class="line-numbers language-cmd"><code class="language-cmd">set MSYS2_HOME=D:\MSYS2set Path=%Path%;%MSYS2_HOME%\usr\binset COMMAND=%MSYS2_HOME%\usr\bin\git.exe%COMMAND% %1 %2 %3 %4 %5 %6 %7 %8 %9<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>然后就用起来了，刚开始用着也没什么问题，然后用着用着突然发现要是传递的参数超过9个怎么办 w(ﾟДﾟ)w。然后就去网上搜了下，然后就把批处理改进了下，然后它就可以支持超过9个参数了 (≧∇≦)ﾉ 。实现如下：</p><pre class="line-numbers language-cmd"><code class="language-cmd">@echo off   set MSYS2_HOME=D:\MSYS2set Path=%Path%;%MSYS2_HOME%\usr\binset COMMAND=%MSYS2_HOME%\usr\bin\git.exeset ARGV=set str=%1:paramif ""%str%""=="""" (    goto end)set ARGV=%ARGV% %str%shift /0set str=%1goto param:end%COMMAND% %ARGV%<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h3 id="3、意外之喜"><a href="#3、意外之喜" class="headerlink" title="3、意外之喜"></a>3、意外之喜</h3><p>然后我想<code>MSYS2</code> 的终端里执行<code>git</code>是有本地化的(中文)，<code>cmd</code>里是不是也可以。然后我就尝试着在<code>cmd</code>里面执行命令前先设置了一个环境变量：<code>set LANG=zh_CN.UTF-8</code>  然后就和你们想的一样，输出是带有中文的 (/≧▽≦)/ 。当然这一切的前提是在windows的区域设置里面开启了UTF-8，否则肯定乱码。</p><p>为了方便不能每次都手动设环境变量吧，直接把 <code>set LANG=zh_CN.UTF-8</code>放到批处理里岂不妙哉，或者直接在 windows 环境变量里，设置变量名为 <code>LANG</code>，值为<code>zh_CN.UTF-8</code>，这样就不用为每个批处理都加上<code>set LANG=zh_CN.UTF-8</code>了，然后成品就是这样：</p><pre class="line-numbers language-cmd"><code class="language-cmd">@echo off   set LANG=zh_CN.UTF-8set MSYS2_HOME=D:\MSYS2set Path=%Path%;%MSYS2_HOME%\usr\binset COMMAND=%MSYS2_HOME%\usr\bin\git.exeset ARGV=set str=%1:paramif ""%str%""=="""" (    goto end)set ARGV=%ARGV% %str%shift /0set str=%1goto param:end%COMMAND% %ARGV%<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><h3 id="4、缺陷与不足"><a href="#4、缺陷与不足" class="headerlink" title="4、缺陷与不足"></a>4、缺陷与不足</h3><p>虽然这个脚本一眼看上去没什么问题，但实际上是有很大缺陷的。比如当传递一些带有特别字符的命令行参数时就会出现问题，比如 <code>=</code>。所以使用的时候要慎重。</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Windows </tag>
+            
+            <tag> MSYS2 </tag>
+            
+            <tag> cmd </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Weasel输入法(Rime)生僻字过滤</title>
+      <link href="/2019/01/06/weasel-shu-ru-fa-rime-sheng-pi-zi-guo-lu/"/>
+      <url>/2019/01/06/weasel-shu-ru-fa-rime-sheng-pi-zi-guo-lu/</url>
+      
+        <content type="html"><![CDATA[<p>Rime输入法是一款优秀的输入法，支持windows，Linux，OSX。其在 windows 下的实现叫做 Weasel输入法。Rime输入法以其可定制性极强而闻名。<br>weasel输入法默认的字符集太大，里面有许多生僻字，一般情况下用不上。如何如何下面主要说一下如何过滤掉这些生僻字。</p><h2 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h2><p>首先在Weasel输入法的用户文件夹里新建/修改文件 <code>luna_pinyin_simp.custom.yaml</code>,然后写入以下内容：</p><pre class="line-numbers language-yaml"><code class="language-yaml"><span class="token key atrule">patch</span><span class="token punctuation">:</span>  <span class="token key atrule">switches</span><span class="token punctuation">:</span>    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> ascii_mode      <span class="token key atrule">reset</span><span class="token punctuation">:</span> <span class="token number">0</span>      <span class="token key atrule">states</span><span class="token punctuation">:</span> <span class="token punctuation">[</span> 中文<span class="token punctuation">,</span> 西文 <span class="token punctuation">]</span>    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> full_shape      <span class="token key atrule">states</span><span class="token punctuation">:</span> <span class="token punctuation">[</span> 半角<span class="token punctuation">,</span> 全角 <span class="token punctuation">]</span>    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> zh_simp                                     <span class="token comment" spellcheck="true"># 简繁转换</span>      <span class="token key atrule">reset</span><span class="token punctuation">:</span> <span class="token number">1</span>      <span class="token key atrule">states</span><span class="token punctuation">:</span> <span class="token punctuation">[</span> 漢字<span class="token punctuation">,</span> 汉字 <span class="token punctuation">]</span>    <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> ascii_punct      <span class="token key atrule">states</span><span class="token punctuation">:</span> <span class="token punctuation">[</span> 。，<span class="token punctuation">,</span> ．， <span class="token punctuation">]</span>    <span class="token punctuation">-</span> <span class="token key atrule">options</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">"gbk"</span><span class="token punctuation">,</span><span class="token string">"utf8"</span><span class="token punctuation">]</span>                             <span class="token comment" spellcheck="true"># 字符集选单</span>      <span class="token key atrule">reset</span><span class="token punctuation">:</span> <span class="token number">0                                          </span><span class="token comment" spellcheck="true"># 默认 GBK</span>      <span class="token key atrule">states</span><span class="token punctuation">:</span>        <span class="token punctuation">-</span> GBK        <span class="token punctuation">-</span> UTF<span class="token punctuation">-</span><span class="token number">8</span>  <span class="token key atrule">engine/filters</span><span class="token punctuation">:</span>    <span class="token punctuation">-</span> simplifier    <span class="token punctuation">-</span> uniquifier    <span class="token punctuation">-</span> charset_filter@gbk                                <span class="token comment" spellcheck="true"># GBK过滤</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>然后重新部署输入法,之后在打字是不是发现那些生僻字已经没有了。</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Weasel </tag>
+            
+            <tag> Rime </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>debootstrap安装debian stretch</title>
+      <link href="/2017/05/03/debootstrap-an-zhuang-debian/"/>
+      <url>/2017/05/03/debootstrap-an-zhuang-debian/</url>
+      
+        <content type="html"><![CDATA[<h1 id="通过debootstrap安装debian-stretch"><a href="#通过debootstrap安装debian-stretch" class="headerlink" title="通过debootstrap安装debian stretch"></a>通过debootstrap安装debian stretch</h1><p>主要介绍如何通过debootstrap安装debian。<br>通过debootstrap安装debian首先得有一个liveCD，我用的是ubuntu 16.04的livecd。本文大部分内容来自debian安装手册。<br>debian stretch安装手册链接：<br>debian stretch安装手册中文版：<a href="https://d-i.debian.org/manual/zh_CN.amd64/" target="_blank" rel="noopener">https://d-i.debian.org/manual/zh_CN.amd64/</a><br>debian stretch安装手册英文版：<a href="https://d-i.debian.org/manual/en.amd64/" target="_blank" rel="noopener">https://d-i.debian.org/manual/en.amd64/</a><br>如果有能力的话，我建议看英文版比较好，中文版翻译比较落后。</p><h2 id="1、准备开始"><a href="#1、准备开始" class="headerlink" title="1、准备开始"></a>1、准备开始</h2><p>首先在分区上创建文件系统，我用的是ext4文件系统。</p><pre class="line-numbers language-bash"><code class="language-bash">mkfs.ext4 /dev/sda10mkfs.ext4 /dev/sda8<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>初始化并激活交换分区</p><pre><code>mkswap /dev/sda9syncswapon </code></pre><p>建立一个目录用来挂载根文件系统</p><pre><code>mkdir /mnt/debianmount /de/sda10 /mnt/debian</code></pre><p>然后建立boot文件夹用来挂载boot分区</p><pre><code>mkdir /mnt/debian/bootmount /dev/sda8 /mnt/debian/boot</code></pre><h2 id="2、安装debootstrap"><a href="#2、安装debootstrap" class="headerlink" title="2、安装debootstrap"></a>2、安装debootstrap</h2><pre><code>apt install debootstrap</code></pre><h2 id="3、运行-debootstrap"><a href="#3、运行-debootstrap" class="headerlink" title="3、运行 debootstrap"></a>3、运行 debootstrap</h2><pre><code>debootstrap --arch amd64 stretch /mnt/debian http://mirrors.ustc.edu.cn/debian</code></pre><h2 id="4、基本系统的配置"><a href="#4、基本系统的配置" class="headerlink" title="4、基本系统的配置"></a>4、基本系统的配置</h2><pre><code>chroot /mnt/debian /bin/bash</code></pre><h2 id="5、创建设备文件"><a href="#5、创建设备文件" class="headerlink" title="5、创建设备文件"></a>5、创建设备文件</h2><p>此时，/dev/ 只含有非常基本的设备文件。安装的后续步骤可能还需要更多的设备文件，所以我们安装 makedev 软件包，并创建默认的静态设备文件，使用(chroot 以后)</p><pre><code>apt install makedevmount none /proc -t proccd /devMAKEDEV generic</code></pre><h2 id="6、分区的挂载"><a href="#6、分区的挂载" class="headerlink" title="6、分区的挂载"></a>6、分区的挂载</h2><p>首先新建 /etc/fstab</p><pre><code>editor /etc/fstab</code></pre><p>然后根据模板修改</p><pre><code># /etc/fstab: static file system information.## file system    mount point   type    options                  dump pass/dev/XXX         /             ext4    defaults                 0    1/dev/XXX         /boot         ext4    rw,nosuid,nodev          0    2/dev/XXX         none          swap    sw                       0    0proc             /proc         proc    defaults                 0    0#/dev/fd0         /media/floppy auto    noauto,rw,sync,user,exec 0    0#/dev/cdrom       /media/cdrom  iso9660 noauto,ro,user,exec      0    0#/dev/XXX         /tmp          ext4    rw,nosuid,nodev          0    2#/dev/XXX         /var          ext4    rw,nosuid,nodev          0    2#/dev/XXX         /usr          ext4    rw,nodev                 0    2#/dev/XXX         /home         ext4    rw,nosuid,nodev          0    2</code></pre><p>然后通过 mount -a 来挂载 /etc/fstab 中所标明的所有文件系统，当然也可以逐个分别地挂载这些文件系统。</p><pre><code>mount -a</code></pre><p>然后挂载 proc 和sysfs 文件系统</p><pre><code>mount -t proc proc /procmount -t sysfs sysfs /sys</code></pre><h2 id="7、设置时区"><a href="#7、设置时区" class="headerlink" title="7、设置时区"></a>7、设置时区</h2><pre><code>editor /etc/adjtime</code></pre><p>写入以下内容</p><pre><code>0.0 0 0.00LOCAL</code></pre><p>一般情况下用LOCAL，当然也可以用UTC代替LOCAL。<br><br>然后设定和选择时区</p><pre><code>dpkg-reconfigure tzdata</code></pre><h2 id="8、网络的配置"><a href="#8、网络的配置" class="headerlink" title="8、网络的配置"></a>8、网络的配置</h2><p>编辑/etc/network/interfaces，下面是模板：</p><pre><code>####################################################################### /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)# See the interfaces(5) manpage for information on what options are# available.####################################################################### We always want the loopback interface.#auto loiface lo inet loopback# To use dhcp:## auto eth0# iface eth0 inet dhcp# An example static IP setup: (broadcast and gateway are optional)## auto eth0# iface eth0 inet static#     address 192.168.0.42#     network 192.168.0.0#     netmask 255.255.255.0#     broadcast 192.168.0.255#     gateway 192.168.0.1</code></pre><p>然后设定host name</p><pre><code>echo DebianHostName &gt; /etc/hostname</code></pre><p>之后编辑hosts，并开启ipv6支持，加入以下内容：</p><pre><code>127.0.0.1 localhost127.0.1.1 DebianHostName# The following lines are desirable for IPv6 capable hosts::1     ip6-localhost ip6-loopbackfe00::0 ip6-localnetff00::0 ip6-mcastprefixff02::1 ip6-allnodesff02::2 ip6-allroutersff02::3 ip6-allhosts</code></pre><h2 id="9、配置-Apt"><a href="#9、配置-Apt" class="headerlink" title="9、配置 Apt"></a>9、配置 Apt</h2><p>编辑/etc/apt/sources.list 文件用于安装额外的软件包，我用的是中科大的开源镜像站。</p><pre><code>deb http://mirrors.ustc.edu.cn/debian/ stretch main contrib non-freedeb-src http://mirrors.ustc.edu.cn/debian/ stretch main contrib non-freedeb http://mirrors.ustc.edu.cn/debian/ stretch-updates main contrib non-freedeb-src http://mirrors.ustc.edu.cn/debian/ stretch-updates main contrib non-freedeb http://mirrors.ustc.edu.cn/debian-security/ stretch/updates main contrib non-freedeb-src http://mirrors.ustc.edu.cn/debian-security/ stretch/updates main contrib non-free</code></pre><p>然后执行，刷新软件仓库，并安装中文字体和aptitude：</p><pre><code>apt updateapt install fonts-noto-cjk aptitude</code></pre><h2 id="10、设置区域和键盘"><a href="#10、设置区域和键盘" class="headerlink" title="10、设置区域和键盘"></a>10、设置区域和键盘</h2><p>设定区域</p><pre><code>apt install localesdpkg-reconfigure locales</code></pre><p>配制键盘：</p><pre><code>apt install console-setupdpkg-reconfigure keyboard-configuration </code></pre><h2 id="11、安装内核"><a href="#11、安装内核" class="headerlink" title="11、安装内核"></a>11、安装内核</h2><pre><code>apt search linux-imageapt install linux-image-arch-etc</code></pre><p>我习惯上把内核头文件也装上，比如我的就是：</p><pre><code>apt install linux-image-4.9.0-2-amd64 linux-headers-4.9.0-2-amd64</code></pre><h2 id="12、安装引导程序"><a href="#12、安装引导程序" class="headerlink" title="12、安装引导程序"></a>12、安装引导程序</h2><pre><code>apt install grub-pcgrub-install /dev/sd8update-grub</code></pre><h2 id="13、创建登录用户并设定密码"><a href="#13、创建登录用户并设定密码" class="headerlink" title="13、创建登录用户并设定密码"></a>13、创建登录用户并设定密码</h2><p>创建用户</p><pre><code>adduser wang</code></pre><p>设定root密码</p><pre><code>passwd root</code></pre><h2 id="14、安装标准系统和桌面"><a href="#14、安装标准系统和桌面" class="headerlink" title="14、安装标准系统和桌面"></a>14、安装标准系统和桌面</h2><pre><code>tasksel install standardapt install gnome-core</code></pre><h2 id="15、清理安装过程中下载的软件包"><a href="#15、清理安装过程中下载的软件包" class="headerlink" title="15、清理安装过程中下载的软件包"></a>15、清理安装过程中下载的软件包</h2><pre><code>aptitude clean</code></pre><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> debian </tag>
+            
+            <tag> linux </tag>
+            
+            <tag> debootstrap </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>linux下firefox安装flash插件</title>
+      <link href="/2017/03/26/linux-xia-firefox-an-zhuang-flash-cha-jian/"/>
+      <url>/2017/03/26/linux-xia-firefox-an-zhuang-flash-cha-jian/</url>
+      
+        <content type="html"><![CDATA[<p>firefox安装flash插件比较方便，首先创建目录：</p><pre><code>mkdir -p ~/.mozilla/plugins</code></pre><p>然后到adobe官网下载适用firefox的npapi版的flash，然后将解压得到的libflashplayer.so放到 ~/.mozilla/plugins 目录下，然后重启firefox。<br>不过这样安装的flash只有当前用户能用，不是全局的，如果想要全局效果，就要把 libflashplayer.so 放到 /usr/lib/mozilla/plugins 目录下。</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> flash </tag>
+            
+            <tag> linux </tag>
+            
+            <tag> firefox </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>xfce4里关于gvim菜单栏消失的问题</title>
+      <link href="/2017/03/26/xfce4-li-guan-yu-gvim-cai-dan-lan-xiao-shi-de-wen-ti/"/>
+      <url>/2017/03/26/xfce4-li-guan-yu-gvim-cai-dan-lan-xiao-shi-de-wen-ti/</url>
+      
+        <content type="html"><![CDATA[<p>今天在我的debian xfce4装gvim时，发现gvim的菜单栏消失，没有字，但是能点出来，所以就到网上去搜了一下，确认是编码的问题</p><p>终端输入locale 得到系统编码是 zh_CN.utf8</p><pre><code>ls /usr/share/vim/vim80/lang  </code></pre><p>发现gvim的编码是menu_zh_cn.utf-8.vim</p><p>所以建个软链：</p><pre><code>cd /usr/share/vim/vim80/langsudo ln -s menu_zh_cn.utf-8.vim menu_zh_cn.utf8.vim</code></pre><p>然后重启gvim菜单栏就能正常显示了</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> debian </tag>
+            
+            <tag> linux </tag>
+            
+            <tag> gvim </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Debian下chromium开启flashplayer及扩展支持</title>
+      <link href="/2017/03/26/debian-xia-chromium-kai-qi-flashplayer-ji-kuo-zhan-zhi-chi/"/>
+      <url>/2017/03/26/debian-xia-chromium-kai-qi-flashplayer-ji-kuo-zhan-zhi-chi/</url>
+      
+        <content type="html"><![CDATA[<h3 id="chromium开启扩展支持"><a href="#chromium开启扩展支持" class="headerlink" title="chromium开启扩展支持"></a>chromium开启扩展支持</h3><p>最近在debian上使用chromiun时发现chromium不能装扩展，这怎么能行，最后折腾了一番，才发现是debian源里的chromium默认没有开启扩展支持，需手动开启，方法如下：</p><p>添加/etc/chromium.d/extensions-flags文件并增加以下内容：  </p><pre><code>#Enable support extensionsCHROMIUM_FLAGS="$CHROMIUM_FLAGS --enable-remote-extensions"  </code></pre><h3 id="chromium手动开启flash-player支持"><a href="#chromium手动开启flash-player支持" class="headerlink" title="chromium手动开启flash player支持"></a>chromium手动开启flash player支持</h3><p>chromium不同于chrome，本身并没有没有自带flash player，很多发行版官方源就有相应软件包，这里教大家手动开启chromium的flash player支持：<br>在/etc/chromium.d/ 下新建PepperFlash-flags文件并添加以下内容  </p><pre><code>#Enable PepperFlashflashso="$HOME/.config/chromium/PepperFlash/libpepflashplayer.so"flashversion=`strings $flashso 2&gt; /dev/null | grep LNX | cut -d ' ' -f 2 | sed -e "s/,/./g"`CHROMIUM_FLAGS="$CHROMIUM_FLAGS --ppapi-flash-path=$flashso --ppapi-flash-version=$flashversion"</code></pre><p>注：flashso代表的是你的libpepflashplayer.so的位置，没必要和我一样,我这样写是保持和chrome自带的flash路径相似，还有就是如果你电脑有多个用户，就不能用$HOME变量，而要用绝对路径。</p><p>最后补充一点，有时候明明加载了flash插件，但是看视<br>频的时候还是提示没装flash插件，这时候你可以在网址输入栏输入：chrome://flags  找到  首选 HTML（而非 Flash），然后选择：已停用</p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> chromium </tag>
+            
+            <tag> flash </tag>
+            
+            <tag> debian </tag>
+            
+            <tag> linux </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
