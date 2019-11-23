@@ -12,7 +12,7 @@ tags: [Firefox]
 
 现在 Firefox 69 版本起默认不加载`userChrome.css`了，当然这是对新用户的，如果你在老版本的 Firefox 用了 `userChrome.css` ，然后升级到 69 是不会禁用的。
 
-如果是新装的怎么办呢？也很简单，打开`about:config`，搜索`toolkit.legacyUserProfileCustomizations.stylesheets`，将其置为 `true`，然后重启浏览器即可。
+如果是全新安装的话也很简单，打开`about:config`，搜索`toolkit.legacyUserProfileCustomizations.stylesheets`，将其置为 `true`，然后重启浏览器即可。
 
 这里顺便贴下我的 `userChrome.css`：
 
